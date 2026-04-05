@@ -63,7 +63,7 @@ module EasyType
       options = default_options.merge(options)
       skip_lines = options.delete(:skip_lines) { HEADER_LINE_REGEX }
       data = []
-      EASY_CSV.parse(csv_data, options) do |row|
+      EASY_CSV.parse(csv_data, **options) do |row, *_|
         data << InstancesResults[row.to_a] unless row_contains_skip_line(row, skip_lines)
       end
       data
