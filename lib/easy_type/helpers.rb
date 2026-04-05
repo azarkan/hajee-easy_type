@@ -63,7 +63,9 @@ module EasyType
       options = default_options.merge(options)
       skip_lines = options.delete(:skip_lines) { HEADER_LINE_REGEX }
       data = []
+      Puppet.debug "CSV data to parse: #{csv_data.inspect[0..200]}"
       EASY_CSV.parse(csv_data, **options) do |row, *_|
+        Puppet.debug "Row class: #{row.class}, Row.to_a: #{row.to_a.inspect[0..200]}"
         data << InstancesResults[row.to_a] unless row_contains_skip_line(row, skip_lines)
       end
       data
