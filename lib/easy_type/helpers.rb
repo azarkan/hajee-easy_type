@@ -64,13 +64,12 @@ module EasyType
       skip_lines = options.delete(:skip_lines) { HEADER_LINE_REGEX }
       data = []
       begin
-        Puppet.info "CSV data to parse (first 200 chars): #{csv_data.inspect[0..200]}"
-        Puppet.info "CSV parse options: #{options.inspect}"
-        EASY_CSV.parse(csv_data, **options) do |row, *_|
-          row_array = row.to_a
-          Puppet.info "Row class: #{row.class}, Row.to_a (first 200): #{row_array.inspect[0..200]}"
-          Puppet.info "First element: #{row_array.first.inspect}, class: #{row_array.first.class}"
-          data << InstancesResults[row_array] unless row_contains_skip_line(row, skip_lines)
+        # Ruby 3.2 CSV.parse requires explicit keyword argument syntax
+        # Use CSV.new instead for better compatibility
+        csv_obj = EASY_CSV.new(csv_data, **options)
+        csv_obj.each do |row|
+          # row should be a CSV::Row object with headers
+          data << InstancesResults[row.to_h] unless row_contains_skip_line(row, skip_lines)
         end
       rescue => e
         Puppet.err "CSV parsing error: #{e.class}: #{e.message}"
