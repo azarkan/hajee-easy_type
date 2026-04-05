@@ -63,10 +63,19 @@ module EasyType
       options = default_options.merge(options)
       skip_lines = options.delete(:skip_lines) { HEADER_LINE_REGEX }
       data = []
-      Puppet.debug "CSV data to parse: #{csv_data.inspect[0..200]}"
-      EASY_CSV.parse(csv_data, **options) do |row, *_|
-        Puppet.debug "Row class: #{row.class}, Row.to_a: #{row.to_a.inspect[0..200]}"
-        data << InstancesResults[row.to_a] unless row_contains_skip_line(row, skip_lines)
+      begin
+        Puppet.info "CSV data to parse (first 200 chars): #{csv_data.inspect[0..200]}"
+        Puppet.info "CSV parse options: #{options.inspect}"
+        EASY_CSV.parse(csv_data, **options) do |row, *_|
+          row_array = row.to_a
+          Puppet.info "Row class: #{row.class}, Row.to_a (first 200): #{row_array.inspect[0..200]}"
+          Puppet.info "First element: #{row_array.first.inspect}, class: #{row_array.first.class}"
+          data << InstancesResults[row_array] unless row_contains_skip_line(row, skip_lines)
+        end
+      rescue => e
+        Puppet.err "CSV parsing error: #{e.class}: #{e.message}"
+        Puppet.err "Backtrace: #{e.backtrace[0..5].join("\n")}"
+        raise
       end
       data
     end
