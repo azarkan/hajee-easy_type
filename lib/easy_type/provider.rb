@@ -193,7 +193,7 @@ module EasyType
       # @return [Array] of Puppet Resources
       #
       # rubocop:disable IfUnlessModifier
-      def prefetch(resources)
+      def prefetch(resources, catalog = nil)
         objects = instances
         resources.keys.each do |name|
           provider = objects.find { |object| object.name == name }
