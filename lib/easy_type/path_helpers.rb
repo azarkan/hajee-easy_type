@@ -11,7 +11,7 @@ module EasyType
     #
     def template_path(template)
       modulepath.each do | path|
-        return path if File.exists?("#{path}/easy_type/templates/#{template}")
+        return path if File.exist?("#{path}/easy_type/templates/#{template}")
       end
       fail "Template #{template} not found in modulepath #{modulepath}"
     end
@@ -90,7 +90,7 @@ module EasyType
     # Returns a true if the expected puppet library path exists
     #
     def puppet_lib?
-      File.exists?(puppet_lib)
+      File.exist?(puppet_lib)
     end
 
     #
@@ -110,7 +110,7 @@ module EasyType
     # Create a directory and notify user of it's creation
     #
     def create_directory path
-      unless File.exists?(path)
+      unless File.exist?(path)
         FileUtils::mkdir_p path
         Puppet.notice "Created directory #{path}"
       end
@@ -122,7 +122,7 @@ module EasyType
     # of the file
     #
     def write_file(path, content)
-      file_exists = File.exists?(path)
+      file_exists = File.exist?(path)
       if file_exists and not @force
         fail "File #{path} already exists. Not overwritten. Use --force to overwrite"
       end

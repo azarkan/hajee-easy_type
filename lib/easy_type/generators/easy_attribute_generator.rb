@@ -54,7 +54,7 @@ module EasyType
         end
 
         def check_type_exists
-          fail "Type file #{type_path} doesn't exist." unless File.exists?(type_path)
+          fail "Type file #{type_path} doesn't exist." unless File.exist?(type_path)
         end
 
         def parameter_in_type?(content)
